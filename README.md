@@ -1,14 +1,19 @@
 # LocalCVS
 Студенческий проект, в рамках которого надо реализовать локальную систему контроля версий, наподобие Git, на языке Python
- myvcs/
+# Примерная структура проекта:
+```bash
+myvcs/
 ├── __main__.py
 ├── commands/
 │   ├── init.py
 │   ├── add.py
-│   └── commit.py
+│   ├── commit.py
+│   ├── log.py
+│   └── status.py
 ├── core/
 │   ├── repository.py
 │   ├── index.py
 │   ├── object_store.py
-│   └── objects.py
+│   ├── objects.py
+│   └── utils.py
 └── tests/
