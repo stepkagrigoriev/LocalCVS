@@ -4,7 +4,7 @@ from Core.repository import Repository
 
 class Buffer:
     def __init__(self, repo : Repository):
-        self.index= os.path.join(repo.vcsdir, 'index')
+        self.index = os.path.join(repo.cvsdir, 'index')
         self.entries = {}
         self.repo = repo
 

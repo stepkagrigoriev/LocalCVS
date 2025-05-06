@@ -16,6 +16,9 @@ class InitTest(unittest.TestCase):
         if os.path.exists(self.dir):
             shutil.rmtree(self.dir)
 
+    '''
+    Тестим, что инициализировали всю структуру
+    '''
     def test_init_creates_structure(self):
         repo = Repository(self.dir)
         repo.init()
@@ -28,12 +31,20 @@ class InitTest(unittest.TestCase):
         with open(head_file, 'r', encoding='utf-8') as f:
             self.assertEqual(f.read(), 'references/heads/master')
 
+
+    '''
+    Тестим, что уже инициализированный репозиторий нельзя инициализировать ещё раз 
+    '''
     def test_init_already_initialized_repo(self):
         new_repo = Repository(self.dir)
         new_repo.init()
         with self.assertRaises(RepositoryError):
             new_repo.init()
 
+
+    '''
+    Два теста на неправильное число аргументов
+    '''
     def test_run_command_init_no_args(self):
         with self.assertRaises(SystemExit) as cm:
             run_command('init', [])
@@ -41,7 +52,7 @@ class InitTest(unittest.TestCase):
 
     def test_run_command_init_a_lot_args(self):
         with self.assertRaises(SystemExit) as cm:
-            run_command('init', ["name1", "name2"])
+            run_command('init', ['name1', 'name2'])
         self.assertEqual(cm.exception.code, 1)
 
 

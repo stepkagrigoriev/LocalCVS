@@ -1,17 +1,17 @@
 import os
 
 
-"""Специальная ошибка для работы с репозиторием"""
+'''Специальная ошибка для работы с репозиторием'''
 class RepositoryError(Exception):
     pass
 
-"""Класс Repository для работы с CVS"""
+'''Класс Repository для работы с CVS'''
 class Repository:
     def __init__(self, path : str):
         self.worktree = path
         self.cvsdir = os.path.join(path, '.cvs')
 
-    """Создаёт структуру .cvs/ и директории в ней"""
+    '''Создаёт структуру .cvs/ и директории в ней'''
     def init(self):
         head_file = os.path.join(self.cvsdir, 'HEAD')
         if os.path.isdir(self.cvsdir) and os.path.exists(head_file):
