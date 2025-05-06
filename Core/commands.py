@@ -1,8 +1,7 @@
-import os
 import sys
 from Core.repository import Repository, RepositoryError
-
-available_commands = ['init']
+from Core.buffer import Buffer
+available_commands = ['init', 'add']
 
 def run_command(command : str, args : list[str]):
     if command == 'init':
@@ -11,12 +10,12 @@ def run_command(command : str, args : list[str]):
             sys.exit(1)
         init(args[0])
     else:
-        print(f"Unknow command: {command}")
+        print(f"Unknown command: {command}")
         print(f"Available commands: {', '.join(available_commands)}")
         sys.exit(1)
 
 
-def init(repo_name):
+def init(repo_name : str):
     try:
         repo = Repository(repo_name)
         repo.init()
@@ -26,5 +25,11 @@ def init(repo_name):
         sys.exit(1)
 
 
-def add():
-    pass
+def add(files : list[str]):
+    repo = Repository('.')
+    buffer = Buffer(repo)
+    buffer.read()
+    for path in files:
+        buffer.add(path)
+    buffer.write()
+    print(f"Added {len(files)} file(s) to buffer area")

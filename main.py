@@ -5,7 +5,7 @@ def main(*args):
         print("Usage: cvs <command> [flags]")
         sys.exit(1)
     command = args[1]
-    flags = args[2::]
+    flags = args[2::]  
     if command == 'init':
         if len(flags) == 0:
             print("Usage: cvs init <repo-name>")

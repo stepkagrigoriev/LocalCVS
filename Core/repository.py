@@ -7,7 +7,7 @@ class RepositoryError(Exception):
 
 """Класс Repository для работы с CVS"""
 class Repository:
-    def __init__(self, path):
+    def __init__(self, path : str):
         self.worktree = path
         self.cvsdir = os.path.join(path, '.cvs')
 
