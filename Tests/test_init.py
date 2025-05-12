@@ -1,6 +1,7 @@
 import unittest
 import os
 import shutil
+import io
 
 from Core.commands import run_command
 from Core.repository import Repository, RepositoryError
