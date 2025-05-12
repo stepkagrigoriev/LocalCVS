@@ -1,4 +1,4 @@
-import unittest, os, shutil
+import unittest, os, shutil, contextlib, io
 from Core.repository import Repository, RepositoryError
 from Core.commands import run_command
 from Core.branch import Branch
@@ -16,14 +16,16 @@ class ResetTest(unittest.TestCase):
 
         with open('f1.txt', 'w') as f:
             f.write('lublu')
-        run_command('add', ['f1.txt'])
-        run_command('commit', ['-m', 'first_commit'])
+        with contextlib.redirect_stdout(io.StringIO()):
+            run_command('add', ['f1.txt'])
+            run_command('commit', ['-m', 'first_commit'])
         self.first_commit = Branch.get_head(repo)
 
         with open('f1.txt', 'w') as f:
             f.write('python')
-        run_command('add', ['f1.txt'])
-        run_command('commit', ['-m', 'second_commit'])
+        with contextlib.redirect_stdout(io.StringIO()):
+            run_command('add', ['f1.txt'])
+            run_command('commit', ['-m', 'second_commit'])
         self.second_commit = Branch.get_head(repo)
 
     def tearDown(self):
@@ -35,7 +37,8 @@ class ResetTest(unittest.TestCase):
     Тест на то, что reset возвращает первый коммит в ветке при валидных данных
     '''
     def test_reset_valid(self):
-        run_command('reset', [self.first_commit])
+        with contextlib.redirect_stdout(io.StringIO()):
+            run_command('reset', [self.first_commit])
         new_head = Branch.get_head(Repository('.'))
         self.assertEqual(new_head, self.first_commit)
 
@@ -44,7 +47,8 @@ class ResetTest(unittest.TestCase):
     '''
     def test_reset_invalid(self):
         with self.assertRaises(RepositoryError):
-            run_command('reset', ['fignya_commit'])
+            with contextlib.redirect_stdout(io.StringIO()):
+                run_command('reset', ['fignya_commit'])
 
 if __name__ == '__main__':
     unittest.main()

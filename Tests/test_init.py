@@ -1,6 +1,4 @@
-import unittest, os, shutil
-
-
+import unittest, os, shutil, io, contextlib
 from Core.commands import run_command
 from Core.repository import Repository, RepositoryError
 
@@ -32,7 +30,6 @@ class InitTests(unittest.TestCase):
         with open(head_file, 'r', encoding='utf-8') as f:
             self.assertEqual(f.read(), 'references/heads/master')
 
-
     '''
     Тестим, что уже инициализированный репозиторий нельзя инициализировать ещё раз 
     '''
@@ -42,18 +39,19 @@ class InitTests(unittest.TestCase):
         with self.assertRaises(RepositoryError):
             new_repo.init()
 
-
     '''
     Два теста на неправильное число аргументов
     '''
     def test_run_command_init_no_args(self):
-        with self.assertRaises(SystemExit) as cm:
-            run_command('init', [])
-        self.assertEqual(cm.exception.code, 1)
+        with self.assertRaises(SystemExit) as e:
+            with contextlib.redirect_stdout(io.StringIO()):
+                run_command('init', [])
+        self.assertEqual(e.exception.code, 1)
 
     def test_run_command_init_a_lot_args(self):
         with self.assertRaises(SystemExit) as cm:
-            run_command('init', ['name1', 'name2'])
+            with contextlib.redirect_stdout(io.StringIO()):
+                run_command('init', ['name1', 'name2'])
         self.assertEqual(cm.exception.code, 1)
 
 

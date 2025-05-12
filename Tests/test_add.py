@@ -1,4 +1,4 @@
-import unittest, os, shutil
+import unittest, os, shutil, io, contextlib
 
 from Core.commands import run_command
 from Core.repository import Repository
@@ -25,14 +25,16 @@ class AddTests(unittest.TestCase):
     Тестим, что есть файл index.cvs
     '''
     def test_add_create_index_file(self):
-        run_command('add', ['f1.txt'])
+        with contextlib.redirect_stdout(io.StringIO()):
+            run_command('add', ['f1.txt'])
         self.assertTrue(os.path.isfile(os.path.join('.cvs', 'index')))
 
     '''
     Тестим, функция сработала корректно на корректных вводных и сформировала всю структуру
     '''
     def test_add_correct(self):
-        run_command('add', ['f1.txt'])
+        with contextlib.redirect_stdout(io.StringIO()):
+            run_command('add', ['f1.txt'])
         with open(os.path.join('.cvs', 'index'), 'r', encoding='utf-8') as f:
             value = f.read().splitlines()
         self.assertEqual(1, len(value))
@@ -49,8 +51,9 @@ class AddTests(unittest.TestCase):
     Тестим, что повторный add не меняет дублирует запись
     '''
     def test_add_dont_change_double(self):
-        run_command('add', ['f1.txt'])
-        run_command('add', ['f1.txt'])
+        with contextlib.redirect_stdout(io.StringIO()):
+            run_command('add', ['f1.txt'])
+            run_command('add', ['f1.txt'])
         with open(os.path.join('.cvs', 'index'), 'r', encoding='utf-8') as f:
             value = f.read().splitlines()
         self.assertEqual(1, len(value))
