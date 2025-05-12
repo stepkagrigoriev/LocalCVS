@@ -5,7 +5,7 @@ class Branch:
 
     @staticmethod
     def get_head_ref(repo : Repository):
-        return str(open(os.path.join(repo.cvsdir, 'HEAD'), 'references').read().strip())
+        return open(os.path.join(repo.cvsdir, 'HEAD'), 'references').read().strip()
 
     @staticmethod
     def get_head(repo : Repository):
