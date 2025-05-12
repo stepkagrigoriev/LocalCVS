@@ -1,4 +1,6 @@
 import sys, os
+import zlib
+
 from Core.repository import Repository, RepositoryError
 from Core.buffer import Buffer
 from Core.commit import Commit
@@ -9,12 +11,12 @@ available_commands = ['init', 'add', 'commit', 'reset', 'log']
 def run_command(command : str, args : list[str]):
     if command == 'init':
         if len(args) != 1:
-            print('Usage: cvs init <repository-name>')
+            print('Usage: cvs init <repo-name>')
             sys.exit(1)
         init(args[0])
     elif command == 'add':
         if len(args) == 0:
-            print('Usage: cvs add [files]')
+            print('Usage: cvs add [file_names]')
             sys.exit(1)
         add_files(args)
     elif command == 'commit':
@@ -23,9 +25,16 @@ def run_command(command : str, args : list[str]):
             sys.exit(1)
         commit_changes(' '.join(args[1::]))
     elif command == 'reset':
-        pass
+        if len(args) == 0:
+            print('Usage: cvs reset <commit-sha>')
+            sys.exit(1)
+        reset_to(args[0])
+        print(f'Reset to {args[0]}')
     elif command == 'log':
-        pass
+        if len(args) != 0:
+            print('Usage: cvs log <repo-name>')
+            sys.exit(1)
+        log_commits(Repository('.'))
     else:
         print(f'Unknown command: {command}')
         print(f'Available commands: {', '.join(available_commands)}')
@@ -69,3 +78,22 @@ def reset_to(commit_sha : str):
     index = os.path.join(repo.cvsdir, 'index')
     if os.path.exists(index):
         os.remove(index)
+
+def log_commits(repo : Repository):
+    sha = Branch.get_head(repo)
+    while sha:
+        key, data = sha[:2], sha[2:]
+        with open(os.path.join(repo.cvsdir, 'objects', key, data), 'rb') as f:
+            lines = zlib.decompress(f.read()).decode().splitlines()
+        message = ''
+        for line in lines:
+            if line.startswith('message '):
+                message = line[8::]
+                break
+        print(f'commit {sha}\n       {message}\n')
+        prev = None
+        for line in lines:
+            if line.startswith('parent '):
+                prev = line[7::]
+                break
+        sha = prev
