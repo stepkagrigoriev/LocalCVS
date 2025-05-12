@@ -73,7 +73,6 @@ def reset_to(commit_sha : str):
     commit_path = os.path.join(repo.cvsdir, 'objects', sha_key, sha_value)
     if not os.path.isfile(commit_path):
         raise RepositoryError(f'Commit {commit_sha} not found')
-
     Branch.update_head(repo, commit_sha)
     index = os.path.join(repo.cvsdir, 'index')
     if os.path.exists(index):

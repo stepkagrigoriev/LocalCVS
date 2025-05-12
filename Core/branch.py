@@ -10,6 +10,12 @@ class Branch:
         return ref
 
     @staticmethod
+    def update_head(repo : Repository, sha : str):
+        ref_path = os.path.join(repo.cvsdir, Branch.get_head_ref(repo))
+        with open(ref_path, 'w', encoding='utf-8') as f:
+            f.write(sha)
+
+    @staticmethod
     def get_head(repo : Repository):
         ref_path = os.path.join(repo.cvsdir, Branch.get_head_ref(repo))
         if os.path.exists(ref_path):
@@ -17,9 +23,3 @@ class Branch:
                 head = f.read().strip()
             return head
         return None
-
-    @staticmethod
-    def update_head(repo : Repository, sha : str):
-        ref_path = os.path.join(repo.cvsdir, Branch.get_head_ref(repo))
-        with open(ref_path, 'w', encoding='utf-8') as f:
-            f.write(sha)

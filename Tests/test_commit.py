@@ -60,12 +60,12 @@ class CommitTests(unittest.TestCase):
         with open('f1.txt', 'w') as f:
             f.write('lublu')
         run_command('add', ['f1.txt'])
-        run_command('commit', ['-m', 'first'])
+        run_command('commit', ['-m', 'first_commit'])
         sha1 = Branch.get_head(Repository('.'))
         with open('f1.txt', 'w') as f:
             f.write('python')
         run_command('add', ['f1.txt'])
-        run_command('commit', ['-m', 'second'])
+        run_command('commit', ['-m', 'second_commit'])
         sha2 = Branch.get_head(Repository('.'))
 
         key, data = sha2[:2], sha2[2::]
