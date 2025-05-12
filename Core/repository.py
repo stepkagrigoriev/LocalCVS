@@ -1,6 +1,5 @@
 import os
 
-
 '''Специальная ошибка для работы с репозиторием'''
 class RepositoryError(Exception):
     pass
