@@ -1,8 +1,10 @@
-import sys
+import sys, os
 from Core.repository import Repository, RepositoryError
 from Core.buffer import Buffer
 from Core.commit import Commit
-available_commands = ['init', 'add']
+from Core.branch import Branch
+
+available_commands = ['init', 'add', 'commit', 'reset', 'log']
 
 def run_command(command : str, args : list[str]):
     if command == 'init':
@@ -55,3 +57,15 @@ def commit_changes(text : str):
     buffer.read()
     commit = Commit(repo, buffer.entries, text)
     print(f'Commited: {commit.write()}')
+
+def reset_to(commit_sha : str):
+    repo = Repository('.')
+    sha_key, sha_value = commit_sha[:2], commit_sha[2:]
+    commit_path = os.path.join(repo.cvsdir, 'objects', sha_key, sha_value)
+    if not os.path.isfile(commit_path):
+        raise RepositoryError(f'Commit {commit_sha} not found')
+
+    Branch.update_head(repo, commit_sha)
+    index = os.path.join(repo.cvsdir, 'index')
+    if os.path.exists(index):
+        os.remove(index)

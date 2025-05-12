@@ -9,7 +9,7 @@ class Commit:
         self.message = message
 
     def write(self):
-        data = b''
+        data = bytes()
         for path, sha in self.entries.items():
             data += f'{sha} {path}\n'.encode()
         tree = ObjectStore(self.repo).hash_object(data, 'tree')

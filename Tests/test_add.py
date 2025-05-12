@@ -1,13 +1,7 @@
-import contextlib
-import io
-import unittest
-import os
-import shutil
+import unittest, os, shutil
 
 from Core.commands import run_command
-from Core.repository import Repository, RepositoryError
-from Core.buffer import Buffer
-from Core.object_store import ObjectStore
+from Core.repository import Repository
 
 class AddTests(unittest.TestCase):
     def setUp(self):

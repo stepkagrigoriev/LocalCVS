@@ -1,12 +1,10 @@
-import unittest
-import os
-import shutil
-import io
+import unittest, os, shutil
+
 
 from Core.commands import run_command
 from Core.repository import Repository, RepositoryError
 
-class InitTest(unittest.TestCase):
+class InitTests(unittest.TestCase):
     def setUp(self):
         self.initial_dir = os.getcwd()
         self.dir = os.path.join(self.initial_dir, 'test_repo')

@@ -1,10 +1,6 @@
-import unittest
-import os
-import shutil
-import io
-import zlib
+import unittest, os, shutil, zlib
 
-from Core.repository import Repository, RepositoryError
+from Core.repository import Repository
 from Core.commands import run_command
 from Core.branch import Branch
 
@@ -54,7 +50,7 @@ class CommitTests(unittest.TestCase):
         key, data = sha[:2], sha[2::]
         with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:
             decomp = zlib.decompress(f.read())
-        self.assertIn(b'add lublu python', decomp)
+        self.assertIn(bytes('add lublu python', 'utf-8'), decomp)
 
     '''
     Тестим, что коммит сохраняет последовательность изменений 

@@ -19,7 +19,7 @@ class Branch:
         return None
 
     @staticmethod
-    def update_head(repo : Repository, sha):
+    def update_head(repo : Repository, sha : str):
         ref_path = os.path.join(repo.cvsdir, Branch.get_head_ref(repo))
         with open(ref_path, 'w', encoding='utf-8') as f:
             f.write(sha)
