@@ -5,13 +5,17 @@ class Branch:
 
     @staticmethod
     def get_head_ref(repo : Repository):
-        return open(os.path.join(repo.cvsdir, 'HEAD'), 'references').read().strip()
+        with open(os.path.join(repo.cvsdir, 'HEAD'), 'r') as f:
+            ref = f.read().strip()
+        return ref
 
     @staticmethod
     def get_head(repo : Repository):
         ref_path = os.path.join(repo.cvsdir, Branch.get_head_ref(repo))
         if os.path.exists(ref_path):
-            return open(ref_path, 'references').read().strip()
+            with open(ref_path, 'r') as f:
+                head = f.read().strip()
+            return head
         return None
 
     @staticmethod

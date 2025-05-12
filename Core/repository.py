@@ -12,11 +12,11 @@ class Repository:
 
     '''Создаёт структуру .cvs/ и директории в ней'''
     def init(self):
-        head_file = os.path.join(self.cvsdir, 'HEAD')
-        if os.path.isdir(self.cvsdir) and os.path.exists(head_file):
+        head = os.path.join(self.cvsdir, 'HEAD')
+        if os.path.isdir(self.cvsdir) and os.path.exists(head):
             raise RepositoryError('Repository already has been initialized')
         os.makedirs(self.cvsdir, exist_ok=True)
         os.makedirs(os.path.join(self.cvsdir, 'objects'), exist_ok=True)
         os.makedirs(os.path.join(self.cvsdir, 'references', 'heads'), exist_ok=True)
-        with open(head_file, 'w', encoding='utf-8') as f:
+        with open(head, 'w', encoding='utf-8') as f:
             f.write('references/heads/master')

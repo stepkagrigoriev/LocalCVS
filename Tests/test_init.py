@@ -8,12 +8,14 @@ from Core.repository import Repository, RepositoryError
 
 class InitTest(unittest.TestCase):
     def setUp(self):
-        self.dir = 'test_repo'
+        self.initial_dir = os.getcwd()
+        self.dir = os.path.join(self.initial_dir, 'test_repo')
         if os.path.exists(self.dir):
             shutil.rmtree(self.dir)
         os.makedirs(self.dir)
 
     def tearDown(self):
+        os.chdir(self.initial_dir)
         if os.path.exists(self.dir):
             shutil.rmtree(self.dir)
 

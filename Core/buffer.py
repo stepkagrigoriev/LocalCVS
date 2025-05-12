@@ -18,7 +18,7 @@ class Buffer:
     def write(self):
         with open(self.index, 'w', encoding='utf-8') as f:
             for path, sha in self.entries.items():
-                f.write(f"{sha} {path}\n")
+                f.write(f'{sha} {path}\n')
 
     def add(self, file_path : str):
         store = ObjectStore(self.repo)

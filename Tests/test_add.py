@@ -12,7 +12,7 @@ from Core.object_store import ObjectStore
 class AddTests(unittest.TestCase):
     def setUp(self):
         self.initial_dir = os.getcwd()
-        self.dir = 'test_repo'
+        self.dir = os.path.join(self.initial_dir, 'test_repo')
         if os.path.exists(self.dir):
             shutil.rmtree(self.dir)
         os.makedirs(self.dir)
