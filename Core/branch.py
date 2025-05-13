@@ -1,8 +1,7 @@
 import os
-from Core.repository import Repository
+from .repository import Repository
 
 class Branch:
-
     @staticmethod
     def get_head_ref(repo : Repository):
         with open(os.path.join(repo.cvsdir, 'HEAD'), 'r') as f:

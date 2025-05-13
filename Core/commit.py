@@ -1,6 +1,6 @@
-from Core.object_store import ObjectStore
-from Core.branch import Branch
-from Core.repository import Repository
+from .object_store import ObjectStore
+from .branch import Branch
+from .repository import Repository
 
 class Commit:
     def __init__(self, repo : Repository, entries : dict, message : str):

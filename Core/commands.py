@@ -1,10 +1,10 @@
 import sys, os
 import zlib
 
-from Core.repository import Repository, RepositoryError
-from Core.buffer import Buffer
-from Core.commit import Commit
-from Core.branch import Branch
+from .repository import Repository, RepositoryError
+from .buffer import Buffer
+from .commit import Commit
+from .branch import Branch
 
 available_commands = ['init', 'add', 'commit', 'reset', 'log']
 
@@ -36,6 +36,7 @@ def run_command(command : str, args : list[str]):
             sys.exit(1)
         log_commits()
     else:
+        print(args)
         print(f'Unknown command: {command}')
         print(f'Available commands: {', '.join(available_commands)}')
         sys.exit(1)
@@ -45,7 +46,7 @@ def init(repo_name : str):
     try:
         repo = Repository(repo_name)
         repo.init()
-        print(f'Initialized empty MyVCS repository in {repo.cvsdir}')
+        print(f'Initialized empty LocalCVS repo in {repo.cvsdir}')
     except RepositoryError as e:
         print(f'RepositoryError: {e}')
         sys.exit(1)

@@ -1,5 +1,5 @@
 import os, zlib, hashlib
-from Core.repository import Repository
+from .repository import Repository
 
 class ObjectStore:
     def __init__(self, repo : Repository):

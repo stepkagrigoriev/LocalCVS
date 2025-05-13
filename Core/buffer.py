@@ -1,6 +1,6 @@
 import os
-from Core.object_store import ObjectStore
-from Core.repository import Repository
+from .object_store import ObjectStore
+from .repository import Repository
 
 class Buffer:
     def __init__(self, repo : Repository):
