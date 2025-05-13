@@ -52,14 +52,14 @@ def init(repo_name : str):
         sys.exit(1)
 
 
-def add_files(file_names : list[str]):
+def add_files(file_paths : list[str]):
     repo = Repository('.')
     buffer = Buffer(repo)
     buffer.read()
-    for path in file_names:
+    for path in file_paths:
         buffer.add(path)
     buffer.write()
-    print(f'Added {len(file_names)} files to buffer area')
+    print(f'Added {len(file_paths)} files to buffer area')
 
 def commit_changes(text : str):
     repo = Repository('.')
