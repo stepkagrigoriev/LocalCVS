@@ -5,23 +5,23 @@ from Core.repository import Repository, RepositoryError
 class InitTests(unittest.TestCase):
     def setUp(self):
         self.initial_dir = os.getcwd()
-        self.dir = os.path.join(self.initial_dir, 'test_repo')
-        if os.path.exists(self.dir):
-            shutil.rmtree(self.dir)
-        os.makedirs(self.dir)
+        self.test_dir = os.path.join(self.initial_dir, 'test_repo')
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.makedirs(self.test_dir)
 
     def tearDown(self):
         os.chdir(self.initial_dir)
-        if os.path.exists(self.dir):
-            shutil.rmtree(self.dir)
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
 
     '''
     Тестим, что инициализировали всю структуру
     '''
     def test_init_creates_structure(self):
-        repo = Repository(self.dir)
+        repo = Repository(self.test_dir)
         repo.init()
-        cvs_path = os.path.join(self.dir, '.cvs')
+        cvs_path = os.path.join(self.test_dir, '.cvs')
         self.assertTrue(os.path.isdir(cvs_path))
         self.assertTrue(os.path.isdir(os.path.join(cvs_path, 'objects')))
         self.assertTrue(os.path.isdir(os.path.join(cvs_path, 'references', 'heads')))
@@ -34,7 +34,7 @@ class InitTests(unittest.TestCase):
     Тестим, что уже инициализированный репозиторий нельзя инициализировать ещё раз 
     '''
     def test_init_already_initialized_repo(self):
-        new_repo = Repository(self.dir)
+        new_repo = Repository(self.test_dir)
         new_repo.init()
         with self.assertRaises(RepositoryError):
             new_repo.init()

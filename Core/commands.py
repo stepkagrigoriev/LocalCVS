@@ -32,9 +32,9 @@ def run_command(command : str, args : list[str]):
         print(f'Reset to {args[0]}')
     elif command == 'log':
         if len(args) != 0:
-            print('Usage: cvs log <repo-name>')
+            print('Usage: cvs log')
             sys.exit(1)
-        log_commits(Repository('.'))
+        log_commits()
     else:
         print(f'Unknown command: {command}')
         print(f'Available commands: {', '.join(available_commands)}')
@@ -78,7 +78,8 @@ def reset_to(commit_sha : str):
     if os.path.exists(index):
         os.remove(index)
 
-def log_commits(repo : Repository):
+def log_commits():
+    repo = Repository('.')
     sha = Branch.get_head(repo)
     while sha:
         key, data = sha[:2], sha[2:]

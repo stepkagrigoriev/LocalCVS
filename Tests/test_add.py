@@ -6,20 +6,20 @@ from Core.repository import Repository
 class AddTests(unittest.TestCase):
     def setUp(self):
         self.initial_dir = os.getcwd()
-        self.dir = os.path.join(self.initial_dir, 'test_repo')
-        if os.path.exists(self.dir):
-            shutil.rmtree(self.dir)
-        os.makedirs(self.dir)
-        repo = Repository(self.dir)
+        self.test_dir = os.path.join(self.initial_dir, 'test_repo')
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.makedirs(self.test_dir)
+        repo = Repository(self.test_dir)
         repo.init()
-        os.chdir(self.dir)
+        os.chdir(self.test_dir)
         with open('f1.txt', 'w', encoding='utf-8') as f:
             f.write('lublu python')
 
     def tearDown(self):
         os.chdir(self.initial_dir)
-        if os.path.exists(self.dir):
-            shutil.rmtree(self.dir)
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
 
     '''
     Тестим, что есть файл index.cvs
