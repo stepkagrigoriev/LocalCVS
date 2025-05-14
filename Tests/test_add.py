@@ -35,7 +35,7 @@ class AddTests(unittest.TestCase):
     def test_add_correct(self):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
-        with open(os.path.join('.cvs', 'index'), 'r', encoding='utf-8') as f:
+        with open(os.path.join('.cvs', 'index'), 'r') as f:
             value = f.read().splitlines()
         self.assertEqual(1, len(value))
 
@@ -54,7 +54,7 @@ class AddTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('add', ['f1.txt'])
-        with open(os.path.join('.cvs', 'index'), 'r', encoding='utf-8') as f:
+        with open(os.path.join('.cvs', 'index'), 'r') as f:
             value = f.read().splitlines()
         self.assertEqual(1, len(value))
 

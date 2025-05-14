@@ -10,13 +10,13 @@ class Buffer:
 
     def read(self):
         if os.path.exists(self.index):
-            with open(self.index, 'r', encoding='utf-8') as f:
+            with open(self.index, 'r') as f:
                 for line in f:
                     sha, path = line.strip().split(' ', 1)
                     self.entries[path] = sha
 
     def write(self):
-        with open(self.index, 'w', encoding='utf-8') as f:
+        with open(self.index, 'w') as f:
             for path, sha in self.entries.items():
                 f.write(f'{sha} {path}\n')
 

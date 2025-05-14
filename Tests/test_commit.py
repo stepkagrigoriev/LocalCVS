@@ -34,7 +34,8 @@ class CommitTests(unittest.TestCase):
     def test_commit_without_staged_files(self):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('commit', ['-m', 'пустой коммит'])
-        sha = Branch.get_head(Repository('.'))
+        with contextlib.redirect_stdout(io.StringIO()):
+            sha = Branch.get_head(Repository('.'))
         key, data = sha[:2], sha[2::]
         obj_path = os.path.join('.cvs', 'objects',key, data)
         self.assertTrue(os.path.isfile(obj_path))
@@ -49,7 +50,8 @@ class CommitTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'add lublu python'])
-        sha = Branch.get_head(Repository('.'))
+        with contextlib.redirect_stdout(io.StringIO()):
+            sha = Branch.get_head(Repository('.'))
         key, data = sha[:2], sha[2::]
         with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:
             decomp = zlib.decompress(f.read())
@@ -65,13 +67,13 @@ class CommitTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'first_commit'])
-        sha1 = Branch.get_head(Repository('.'))
+            sha1 = Branch.get_head(Repository('.'))
         with open('f1.txt', 'w') as f:
             f.write('python')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'second_commit'])
-        sha2 = Branch.get_head(Repository('.'))
+            sha2 = Branch.get_head(Repository('.'))
 
         key, data = sha2[:2], sha2[2::]
         with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:

@@ -40,7 +40,8 @@ class ResetTest(unittest.TestCase):
     def test_reset_valid(self):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('reset', [self.first_commit])
-        new_head = Branch.get_head(Repository('.'))
+        with contextlib.redirect_stdout(io.StringIO()):
+            new_head = Branch.get_head(Repository('.'))
         self.assertEqual(new_head, self.first_commit)
 
     '''

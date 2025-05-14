@@ -11,9 +11,9 @@ available_commands = ['init', 'add', 'commit', 'reset', 'log']
 def run_command(command : str, args : list[str]):
     if command == 'init':
         if len(args) != 1:
-            print('Usage: LocalCVS init <repo-name>')
+            print('Usage: LocalCVS init .')
             sys.exit(1)
-        init(args[0])
+        init()
     elif command == 'add':
         if len(args) == 0:
             print('Usage: LocalCVS add [file_names]')
@@ -42,9 +42,9 @@ def run_command(command : str, args : list[str]):
         sys.exit(1)
 
 
-def init(repo_name : str):
+def init():
     try:
-        repo = Repository(repo_name)
+        repo = Repository('.')
         repo.init()
         print(f'Initialized empty LocalCVS repo in {repo.cvsdir}')
     except RepositoryError as e:
