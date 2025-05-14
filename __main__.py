@@ -10,15 +10,15 @@ def main(*args):
     if not arguments or arguments[0] in ['--help', '-h']:
         print("""
         LocalCVS - простая локальная система контроля версий 
-
         Доступные команды:
           init <repo>         — инициализировать новый репозиторий
           add <file> [...]    — добавить файлы в буфер
           commit -m <msg>     — закоммитить изменения с сообщением
           reset <commit>      — откатить текущую ветку к заданному коммиту (sha)
           log                 — показать историю коммитов
-          --help, -h            — показать это сообщение помощи
+          --help, -h          — показать это сообщение помощи
         """)
+        sys.exit(1)
     command = arguments[0]
     flags = list(arguments[1::])
     run_command(command, flags)

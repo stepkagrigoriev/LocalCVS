@@ -24,11 +24,11 @@ class InitTests(unittest.TestCase):
         cvs_path = os.path.join(self.test_dir, '.cvs')
         self.assertTrue(os.path.isdir(cvs_path))
         self.assertTrue(os.path.isdir(os.path.join(cvs_path, 'objects')))
-        self.assertTrue(os.path.isdir(os.path.join(cvs_path, 'references', 'heads')))
+        self.assertTrue(os.path.isdir(os.path.join(cvs_path, 'refs', 'heads')))
         head_file = os.path.join(cvs_path, 'HEAD')
         self.assertTrue(os.path.isfile(head_file))
         with open(head_file, 'r', encoding='utf-8') as f:
-            self.assertEqual(f.read(), 'references/heads/master')
+            self.assertEqual(f.read(), 'refs/heads/master')
 
     '''
     Тестим, что уже инициализированный репозиторий нельзя инициализировать ещё раз 

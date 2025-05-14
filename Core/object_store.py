@@ -10,9 +10,8 @@ class ObjectStore:
         sha = hashlib.sha1(name).hexdigest()
         path = os.path.join(self.objects_dir, sha[:2])
         os.makedirs(path, exist_ok=True)
-        object_path = os.path.join(path, sha[2:])
         compressed = zlib.compress(name)
 
-        with open(object_path, 'wb') as f:
+        with open(os.path.join(path, sha[2:]), 'wb') as f:
             f.write(compressed)
         return sha

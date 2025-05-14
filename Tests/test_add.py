@@ -22,7 +22,7 @@ class AddTests(unittest.TestCase):
             shutil.rmtree(self.test_dir)
 
     '''
-    Тестим, что есть файл index.cvs
+    Тестим, что в .cvs есть index
     '''
     def test_add_create_index_file(self):
         with contextlib.redirect_stdout(io.StringIO()):

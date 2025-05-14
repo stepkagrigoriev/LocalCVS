@@ -17,6 +17,17 @@ class Repository:
             raise RepositoryError('Repository already has been initialized')
         os.makedirs(self.cvsdir, exist_ok=True)
         os.makedirs(os.path.join(self.cvsdir, 'objects'), exist_ok=True)
-        os.makedirs(os.path.join(self.cvsdir, 'references', 'heads'), exist_ok=True)
-        with open(head, 'w', encoding='utf-8') as f:
-            f.write('references/heads/master')
+        os.makedirs(os.path.join(self.cvsdir, 'refs', 'heads'), exist_ok=True)
+        with open(head, 'w') as f:
+            f.write('refs/heads/master')
+
+
+    def find_repo_root(self : str):
+        path = os.path.abspath(self)
+        while True:
+            if os.path.isdir(os.path.join(path, '.cvs')):
+                return path
+            parent = os.path.dirname(path)
+            if parent == path:
+                raise RepositoryError('No repository found')
+            path = parent

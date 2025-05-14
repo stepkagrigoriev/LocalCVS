@@ -1,5 +1,6 @@
 import unittest, os, shutil, contextlib, io
-from Core.repository import Repository, RepositoryError
+
+from Core.repository import Repository,RepositoryError
 from Core.commands import run_command
 from Core.branch import Branch
 

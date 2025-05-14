@@ -1,8 +1,6 @@
 import unittest, os, shutil, contextlib, io
 
-from jinja2.runtime import new_context
-
-from Core.repository import Repository, RepositoryError
+from Core.repository import Repository
 from Core.commands import run_command
 from Core.branch import Branch
 

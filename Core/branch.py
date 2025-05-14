@@ -4,21 +4,24 @@ from .repository import Repository
 class Branch:
     @staticmethod
     def get_head_ref(repo : Repository):
-        with open(os.path.join(repo.cvsdir, 'HEAD'), 'r') as f:
-            ref = f.read().strip()
-        return ref
+        root = Repository.find_repo_root(repo.worktree)
+        head_path = os.path.join(root, '.cvs', 'HEAD')
+        with open(head_path, 'r') as f:
+            return f.read().strip()
 
     @staticmethod
-    def update_head(repo : Repository, sha : str):
-        ref_path = os.path.join(repo.cvsdir, Branch.get_head_ref(repo))
-        with open(ref_path, 'w', encoding='utf-8') as f:
+    def update_head(repo : Repository, sha: str):
+        root = Repository.find_repo_root(repo.worktree)
+        ref_path = os.path.join(root, '.cvs', Branch.get_head_ref(repo))
+        os.makedirs(os.path.dirname(ref_path), exist_ok=True)
+        with open(ref_path, 'w') as f:
             f.write(sha)
 
     @staticmethod
     def get_head(repo : Repository):
-        ref_path = os.path.join(repo.cvsdir, Branch.get_head_ref(repo))
-        if os.path.exists(ref_path):
+        root = Repository.find_repo_root(repo.worktree)
+        ref_path = os.path.join(root, '.cvs', Branch.get_head_ref(repo))
+        if os.path.isfile(ref_path):
             with open(ref_path, 'r') as f:
-                head = f.read().strip()
-            return head
+                return f.read().strip()
         return None

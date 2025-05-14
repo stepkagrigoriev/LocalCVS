@@ -21,8 +21,10 @@ class Buffer:
                 f.write(f'{sha} {path}\n')
 
     def add(self, file_path : str):
+        if not os.path.isabs(file_path):
+            file_path = os.path.abspath(file_path)
         store = ObjectStore(self.repo)
         with open(file_path, 'rb') as f:
             data = f.read()
         sha = store.hash_object(data, 'blob')
-        self.entries[file_path] = sha
+        self.entries[os.path.relpath(file_path, self.repo.worktree)] = sha
