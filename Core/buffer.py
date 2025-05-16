@@ -1,6 +1,5 @@
 import os
 from .object_store import ObjectStore
-from .repository import Repository
 
 
 class Buffer:

@@ -20,8 +20,9 @@ class Repository:
         with open(head, 'w') as f:
             f.write('refs/heads/master')
 
-    def find_repo_root(self):
-        path = os.path.abspath(self)
+    @staticmethod
+    def find_repo_root(root):
+        path = os.path.abspath(root)
         while True:
             if os.path.isdir(os.path.join(path, '.cvs')):
                 return path

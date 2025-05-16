@@ -1,7 +1,6 @@
 import os
 import zlib
 import hashlib
-from .repository import Repository
 
 
 class ObjectStore:
@@ -13,7 +12,7 @@ class ObjectStore:
         sha = hashlib.sha1(name).hexdigest()
         path = os.path.join(self.objects_dir, sha[:2])
         os.makedirs(path, exist_ok=True)
-        compressed = zlib.compress(name)
+        compressed = zlib.compress(name   )
         with open(os.path.join(path, sha[2:]), 'wb') as f:
             f.write(compressed)
         return sha

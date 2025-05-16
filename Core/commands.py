@@ -60,7 +60,11 @@ def add_files(file_paths):
     buffer = Buffer(repo)
     buffer.read()
     for path in file_paths:
-        buffer.add(path)
+        try:
+            buffer.add(path)
+        except FileNotFoundError as e:
+            print(f'File {path} not found!')
+            sys.exit(1)
     buffer.write()
     print(f'Added {len(file_paths)} files to buffer area')
 
@@ -80,6 +84,7 @@ def reset_to(commit_sha):
     if not os.path.isfile(commit_path):
         raise RepositoryError(f'Commit {commit_sha} not found')
     Branch.update_head(repo, commit_sha)
+    '''???'''
     index = os.path.join(repo.cvsdir, 'index')
     if os.path.exists(index):
         os.remove(index)
