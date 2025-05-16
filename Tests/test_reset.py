@@ -1,8 +1,13 @@
-import unittest, os, shutil, contextlib, io
-
-from Core.repository import Repository,RepositoryError
+import unittest
+import os
+import shutil
+import zlib
+import contextlib
+import io
+from Core.repository import Repository, RepositoryError
 from Core.commands import run_command
 from Core.branch import Branch
+
 
 class ResetTest(unittest.TestCase):
     def setUp(self):
@@ -35,7 +40,7 @@ class ResetTest(unittest.TestCase):
             shutil.rmtree(self.test_dir)
 
     '''
-    Тест на то, что reset возвращает первый коммит в ветке при валидных данных
+    Тест на то, что reset возвращает первый коммит в ветке
     '''
     def test_reset_valid(self):
         with contextlib.redirect_stdout(io.StringIO()):
@@ -51,6 +56,7 @@ class ResetTest(unittest.TestCase):
         with self.assertRaises(RepositoryError):
             with contextlib.redirect_stdout(io.StringIO()):
                 run_command('reset', ['fignya_commit'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,7 +1,11 @@
-import unittest, os, shutil, io, contextlib
-
+import unittest
+import os
+import shutil
+import contextlib
+import io
 from Core.commands import run_command
 from Core.repository import Repository
+
 
 class AddTests(unittest.TestCase):
     def setUp(self):
@@ -30,7 +34,7 @@ class AddTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(os.path.join('.cvs', 'index')))
 
     '''
-    Тестим, функция сработала корректно на корректных вводных и сформировала всю структуру
+    Тестим, функция сработала корректно и сформировала всю структуру
     '''
     def test_add_correct(self):
         with contextlib.redirect_stdout(io.StringIO()):
@@ -64,6 +68,7 @@ class AddTests(unittest.TestCase):
     def test_add_nonexistent_file(self):
         with self.assertRaises(FileNotFoundError):
             run_command('add', ['f2.txt'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,8 +2,9 @@ import os
 from .object_store import ObjectStore
 from .repository import Repository
 
+
 class Buffer:
-    def __init__(self, repo : Repository):
+    def __init__(self, repo):
         self.index = os.path.join(repo.cvsdir, 'index')
         self.entries = {}
         self.repo = repo
@@ -20,7 +21,7 @@ class Buffer:
             for path, sha in self.entries.items():
                 f.write(f'{sha} {path}\n')
 
-    def add(self, file_path : str):
+    def add(self, file_path):
         if not os.path.isabs(file_path):
             file_path = os.path.abspath(file_path)
         store = ObjectStore(self.repo)

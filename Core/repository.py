@@ -1,11 +1,12 @@
 import os
 
-'''Специальная ошибка для работы с репозиторием'''
+
 class RepositoryError(Exception):
     pass
 
+
 class Repository:
-    def __init__(self, path : str):
+    def __init__(self, path):
         self.worktree = path
         self.cvsdir = os.path.join(path, '.cvs')
 
@@ -19,8 +20,7 @@ class Repository:
         with open(head, 'w') as f:
             f.write('refs/heads/master')
 
-
-    def find_repo_root(self : str):
+    def find_repo_root(self):
         path = os.path.abspath(self)
         while True:
             if os.path.isdir(os.path.join(path, '.cvs')):

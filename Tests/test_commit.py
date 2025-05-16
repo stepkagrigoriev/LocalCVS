@@ -1,8 +1,13 @@
-import unittest, os, shutil, zlib, contextlib, io
-
+import unittest
+import os
+import shutil
+import zlib
+import contextlib
+import io
 from Core.repository import Repository
 from Core.commands import run_command
 from Core.branch import Branch
+
 
 class CommitTests(unittest.TestCase):
     def setUp(self):
@@ -26,7 +31,7 @@ class CommitTests(unittest.TestCase):
     def test_commit_wrong_args(self):
         with self.assertRaises(SystemExit):
             with contextlib.redirect_stdout(io.StringIO()):
-                run_command('commit', ['АААА', 'НЕ РАБОТАЕТ'])
+                run_command('commit', ['ААА', 'НЕ РАБОТАЕТ'])
 
     '''
     Коммит без изменений должен создать пустой объект
@@ -37,9 +42,8 @@ class CommitTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             sha = Branch.get_head(Repository('.'))
         key, data = sha[:2], sha[2::]
-        obj_path = os.path.join('.cvs', 'objects',key, data)
+        obj_path = os.path.join('.cvs', 'objects', key, data)
         self.assertTrue(os.path.isfile(obj_path))
-
 
     '''
     Тестим, что коммит сохраняет все изменяемые файлы в свой tree
@@ -49,16 +53,16 @@ class CommitTests(unittest.TestCase):
             f.write('lublu python')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
-            run_command('commit', ['-m', 'add lublu python'])
+            run_command('commit', ['-m', 'lublu python'])
         with contextlib.redirect_stdout(io.StringIO()):
             sha = Branch.get_head(Repository('.'))
         key, data = sha[:2], sha[2::]
         with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:
             decomp = zlib.decompress(f.read())
-        self.assertIn(bytes('add lublu python', 'utf-8'), decomp)
+        self.assertIn(bytes('lublu python', 'utf-8'), decomp)
 
     '''
-    Тестим, что коммит сохраняет последовательность изменений 
+    Тестим, что коммит сохраняет последовательность изменений
     (для текущего изменения всегда известно предыдущее)
     '''
     def test_multiple_commits_chain(self):
@@ -74,11 +78,11 @@ class CommitTests(unittest.TestCase):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'second_commit'])
             sha2 = Branch.get_head(Repository('.'))
-
         key, data = sha2[:2], sha2[2::]
         with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:
             decomp = zlib.decompress(f.read())
         self.assertIn(sha1.encode(), decomp)
+
 
 if __name__ == '__main__':
     unittest.main()

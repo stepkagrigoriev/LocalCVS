@@ -1,14 +1,17 @@
-import sys, os
+import sys
+import os
 import zlib
-
-from .repository import Repository, RepositoryError
+from .repository import Repository
+from .repository import RepositoryError
 from .buffer import Buffer
 from .commit import Commit
 from .branch import Branch
 
+
 available_commands = ['init', 'add', 'commit', 'reset', 'log']
 
-def run_command(command : str, args : list[str]):
+
+def run_command(command, args):
     if command == 'init':
         if len(args) != 1:
             print('Usage: LocalCVS init .')
@@ -52,7 +55,7 @@ def init():
         sys.exit(1)
 
 
-def add_files(file_paths : list[str]):
+def add_files(file_paths):
     repo = Repository(Repository.find_repo_root('.'))
     buffer = Buffer(repo)
     buffer.read()
@@ -61,14 +64,16 @@ def add_files(file_paths : list[str]):
     buffer.write()
     print(f'Added {len(file_paths)} files to buffer area')
 
-def commit_changes(text : str):
+
+def commit_changes(text):
     repo = Repository(Repository.find_repo_root('.'))
     buffer = Buffer(repo)
     buffer.read()
     commit = Commit(repo, buffer.entries, text)
     print(f'Commited: {commit.write()}')
 
-def reset_to(commit_sha : str):
+
+def reset_to(commit_sha):
     repo = Repository(Repository.find_repo_root('.'))
     sha_key, sha_value = commit_sha[:2], commit_sha[2:]
     commit_path = os.path.join(repo.cvsdir, 'objects', sha_key, sha_value)
@@ -79,8 +84,9 @@ def reset_to(commit_sha : str):
     if os.path.exists(index):
         os.remove(index)
 
+
 def log_commits():
-    repo = Repository(Repository.find_repo_root(Repository.find_repo_root('.')))
+    repo = Repository(Repository.find_repo_root('.'))
     sha = Branch.get_head(repo)
     if not sha:
         print('There\' no commits in repo!')

@@ -1,6 +1,12 @@
-import unittest, os, shutil, io, contextlib
+import unittest
+import os
+import shutil
+import zlib
+import contextlib
+import io
 from Core.commands import run_command
 from Core.repository import Repository, RepositoryError
+
 
 class InitTests(unittest.TestCase):
     def setUp(self):
@@ -21,17 +27,17 @@ class InitTests(unittest.TestCase):
     def test_init_creates_structure(self):
         repo = Repository(self.test_dir)
         repo.init()
-        cvs_path = os.path.join(self.test_dir, '.cvs')
-        self.assertTrue(os.path.isdir(cvs_path))
-        self.assertTrue(os.path.isdir(os.path.join(cvs_path, 'objects')))
-        self.assertTrue(os.path.isdir(os.path.join(cvs_path, 'refs', 'heads')))
-        head_file = os.path.join(cvs_path, 'HEAD')
+        path = os.path.join(self.test_dir, '.cvs')
+        self.assertTrue(os.path.isdir(path))
+        self.assertTrue(os.path.isdir(os.path.join(path, 'objects')))
+        self.assertTrue(os.path.isdir(os.path.join(path, 'refs', 'heads')))
+        head_file = os.path.join(path, 'HEAD')
         self.assertTrue(os.path.isfile(head_file))
-        with open(head_file, 'r', encoding='utf-8') as f:
+        with open(head_file, 'r') as f:
             self.assertEqual(f.read(), 'refs/heads/master')
 
     '''
-    Тестим, что уже инициализированный репозиторий нельзя инициализировать ещё раз 
+    Тестим, что уже инициализированный репозиторий нельзя ещё раз
     '''
     def test_init_already_initialized_repo(self):
         new_repo = Repository(self.test_dir)

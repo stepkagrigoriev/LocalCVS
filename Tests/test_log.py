@@ -1,8 +1,13 @@
-import unittest, os, shutil, contextlib, io
-
+import unittest
+import os
+import shutil
+import zlib
+import contextlib
+import io
 from Core.repository import Repository
 from Core.commands import run_command
 from Core.branch import Branch
+
 
 class LogTests(unittest.TestCase):
     def setUp(self):
@@ -55,7 +60,7 @@ class LogTests(unittest.TestCase):
         self.assertTrue(ind1 > ind2 > ind3)
 
     '''
-    Тестим, что при log выдаёт всю информацию о текущих коммитах (в обратном порядке)
+    Тестим, что при log выдаёт всю информацию о текущих коммитах
     '''
     def test_correct_log_messages(self):
         new_console = io.StringIO()
