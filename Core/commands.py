@@ -6,9 +6,9 @@ from .repository import RepositoryError
 from .buffer import Buffer
 from .commit import Commit
 from .branch import Branch
+from .tag import Tag
 
-
-available_commands = ['init', 'add', 'commit', 'reset', 'log']
+available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag']
 
 
 def run_command(command, args):
@@ -38,6 +38,8 @@ def run_command(command, args):
             print('Usage: LocalCVS log')
             sys.exit(1)
         log_commits()
+    elif command == 'tag':
+        tag(args)
     else:
         print(args)
         print(f'Unknown command: {command}')
@@ -84,7 +86,6 @@ def reset_to(commit_sha):
     if not os.path.isfile(commit_path):
         raise RepositoryError(f'Commit {commit_sha} not found')
     Branch.update_head(repo, commit_sha)
-    '''???'''
     index = os.path.join(repo.cvsdir, 'index')
     if os.path.exists(index):
         os.remove(index)
@@ -111,3 +112,25 @@ def log_commits():
                 prev = line[7::]
                 break
         sha = prev
+
+
+def tag(flags):
+    repo = Repository(Repository.find_repo_root('.'))
+    if not flags:
+        for t in Tag.list_tags(repo):
+            print(f'{t}: {Tag.get_tag_commit(repo, t)}')
+    elif flags[0] == '-d':
+        if len(flags) == 1:
+            print('Repository Error: no tag name to delete')
+        try:
+            Tag.delete_tag(repo, flags[1])
+            print(f'Tag {flags[1]} deleted')
+        except FileNotFoundError:
+            print(f'Tag {flags[1]} not found')
+    else:
+        sha = flags[1] if len(flags) > 1 else None
+        try:
+            Tag.create_tag(repo, flags[0], sha)
+            print(f'Tag {flags[0]} created')
+        except FileExistsError:
+            print(f'Tag {flags[0]} already exists')

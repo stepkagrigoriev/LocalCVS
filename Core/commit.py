@@ -1,6 +1,7 @@
 from .object_store import ObjectStore
 from .branch import Branch
-
+from .repository import Repository
+import os
 
 class Commit:
     def __init__(self, repo, entries, message):
@@ -9,7 +10,7 @@ class Commit:
         self.message = message
 
     def write(self):
-        data = bytes()
+        data = b''
         for path, sha in self.entries.items():
             data += f'{sha} {path}\n'.encode()
         tree = ObjectStore(self.repo).hash_object(data, 'tree')

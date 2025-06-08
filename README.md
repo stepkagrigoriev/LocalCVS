@@ -34,6 +34,11 @@ python -m LocalCVS log
 
 # Откат к предыдущему коммиту (SHA взят случайный)
 python -m LocalCVS reset abcdefgh0123456789
+
+# Работа с тэгами (SHA взят случайный)
+python -m LovalCVS tag v1.0 abcdefgh0123456789
+python -m LocalCVS tag -d v1.0
+python -m LovalCVS tag #посмотреть все тэги и коммиты, привязанные к ним
 ```
 ---
 ## Тестирование

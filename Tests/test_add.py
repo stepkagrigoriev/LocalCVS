@@ -66,8 +66,9 @@ class AddTests(unittest.TestCase):
     Тест на добавление несуществующего файла
     '''
     def test_add_nonexistent_file(self):
-        with self.assertRaises(FileNotFoundError):
-            run_command('add', ['f2.txt'])
+        with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(io.StringIO()):
+                run_command('add', ['f2.txt'])
 
 
 if __name__ == '__main__':

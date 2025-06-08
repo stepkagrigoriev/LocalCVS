@@ -1,0 +1,38 @@
+import os
+from .branch import Branch
+
+class Tag:
+    @staticmethod
+    def create_tag(repo, tag, sha):
+        tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
+        if os.path.exists(tag_path):
+            raise FileExistsError()
+        if not sha:
+            sha = Branch.get_head(repo)
+        os.makedirs(os.path.dirname(tag_path), exist_ok=True)
+        with open(tag_path, 'w') as f:
+            f.write(sha)
+
+
+    @staticmethod
+    def list_tags(repo):
+        tag_dir = os.path.join(repo.cvsdir, 'refs', 'tags')
+        if not os.path.exists(tag_dir):
+            return []
+        return os.listdir(tag_dir)
+
+
+    @staticmethod
+    def delete_tag(repo, tag):
+        tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
+        if not os.path.exists(tag_path):
+            raise FileNotFoundError()
+        os.remove(tag_path)
+
+    @staticmethod
+    def get_tag_commit(repo, tag):
+        tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
+        if not os.path.exists(tag_path):
+            raise FileNotFoundError()
+        with open(tag_path, 'r') as f:
+            return f.read().strip()
