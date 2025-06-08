@@ -1,7 +1,6 @@
 import unittest
 import os
 import shutil
-import zlib
 import contextlib
 import io
 from Core.repository import Repository
@@ -16,8 +15,8 @@ class LogTests(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.makedirs(self.test_dir)
-        repo = Repository(self.test_dir)
-        repo.init()
+        self.repo = Repository(self.test_dir)
+        self.repo.init()
         os.chdir(self.test_dir)
 
         with open('f1.txt', 'w') as f:
@@ -25,21 +24,21 @@ class LogTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'first_commit'])
-        self.first_commit = Branch.get_head(repo)
+        self.first_commit = Branch.get_head(self.repo)
 
         with open('f1.txt', 'w') as f:
             f.write('python')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'second_commit'])
-        self.second_commit = Branch.get_head(repo)
+        self.second_commit = Branch.get_head(self.repo)
 
         with open('f1.txt', 'w') as f:
             f.write('silno')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'third_commit'])
-        self.third_commit = Branch.get_head(repo)
+        self.third_commit = Branch.get_head(self.repo)
 
     def tearDown(self):
         os.chdir(self.initial_dir)

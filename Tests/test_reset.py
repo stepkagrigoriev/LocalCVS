@@ -1,7 +1,6 @@
 import unittest
 import os
 import shutil
-import zlib
 import contextlib
 import io
 from Core.repository import Repository, RepositoryError
@@ -16,8 +15,8 @@ class ResetTest(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.makedirs(self.test_dir)
-        repo = Repository(self.test_dir)
-        repo.init()
+        self.repo = Repository(self.test_dir)
+        self.repo.init()
         os.chdir(self.test_dir)
 
         with open('f1.txt', 'w') as f:
@@ -25,14 +24,14 @@ class ResetTest(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'first_commit'])
-        self.first_commit = Branch.get_head(repo)
+        self.first_commit = Branch.get_head(self.repo)
 
         with open('f1.txt', 'w') as f:
             f.write('python')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'second_commit'])
-        self.second_commit = Branch.get_head(repo)
+        self.second_commit = Branch.get_head(self.repo)
 
     def tearDown(self):
         os.chdir(self.initial_dir)
@@ -46,7 +45,7 @@ class ResetTest(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('reset', [self.first_commit])
         with contextlib.redirect_stdout(io.StringIO()):
-            new_head = Branch.get_head(Repository('.'))
+            new_head = Branch.get_head(self.repo)
         self.assertEqual(new_head, self.first_commit)
 
     '''

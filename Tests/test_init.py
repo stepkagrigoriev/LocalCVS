@@ -1,7 +1,6 @@
 import unittest
 import os
 import shutil
-import zlib
 import contextlib
 import io
 from Core.commands import run_command

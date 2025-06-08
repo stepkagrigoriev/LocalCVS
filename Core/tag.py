@@ -3,7 +3,7 @@ from .branch import Branch
 
 class Tag:
     @staticmethod
-    def create_tag(repo, tag, sha):
+    def create_tag(repo, tag, sha = None):
         tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
         if os.path.exists(tag_path):
             raise FileExistsError()

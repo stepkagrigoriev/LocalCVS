@@ -14,8 +14,8 @@ class AddTests(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.makedirs(self.test_dir)
-        repo = Repository(self.test_dir)
-        repo.init()
+        self.repo = Repository(self.test_dir)
+        self.repo.init()
         os.chdir(self.test_dir)
         with open('f1.txt', 'w', encoding='utf-8') as f:
             f.write('lublu python')

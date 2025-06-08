@@ -16,8 +16,8 @@ class CommitTests(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.makedirs(self.test_dir)
-        repo = Repository(self.test_dir)
-        repo.init()
+        self.repo = Repository(self.test_dir)
+        self.repo.init()
         os.chdir(self.test_dir)
 
     def tearDown(self):
@@ -40,7 +40,7 @@ class CommitTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('commit', ['-m', 'пустой коммит'])
         with contextlib.redirect_stdout(io.StringIO()):
-            sha = Branch.get_head(Repository('.'))
+            sha = Branch.get_head(self.repo)
         key, data = sha[:2], sha[2::]
         obj_path = os.path.join('.cvs', 'objects', key, data)
         self.assertTrue(os.path.isfile(obj_path))
@@ -55,7 +55,7 @@ class CommitTests(unittest.TestCase):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'lublu python'])
         with contextlib.redirect_stdout(io.StringIO()):
-            sha = Branch.get_head(Repository('.'))
+            sha = Branch.get_head(self.repo)
         key, data = sha[:2], sha[2::]
         with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:
             decomp = zlib.decompress(f.read())
@@ -71,13 +71,13 @@ class CommitTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'first_commit'])
-            sha1 = Branch.get_head(Repository('.'))
+            sha1 = Branch.get_head(self.repo)
         with open('f1.txt', 'w') as f:
             f.write('python')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'second_commit'])
-            sha2 = Branch.get_head(Repository('.'))
+            sha2 = Branch.get_head(self.repo)
         key, data = sha2[:2], sha2[2::]
         with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:
             decomp = zlib.decompress(f.read())
