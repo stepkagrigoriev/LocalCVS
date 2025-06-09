@@ -3,6 +3,7 @@ from .branch import Branch
 from .repository import Repository
 import os
 
+
 class Commit:
     def __init__(self, repo, entries, message):
         self.repo = repo

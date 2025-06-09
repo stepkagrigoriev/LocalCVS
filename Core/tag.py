@@ -1,9 +1,10 @@
 import os
 from .branch import Branch
 
+
 class Tag:
     @staticmethod
-    def create_tag(repo, tag, sha = None):
+    def create_tag(repo, tag, sha=None):
         tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
         if os.path.exists(tag_path):
             raise FileExistsError()
@@ -13,14 +14,12 @@ class Tag:
         with open(tag_path, 'w') as f:
             f.write(sha)
 
-
     @staticmethod
     def list_tags(repo):
         tag_dir = os.path.join(repo.cvsdir, 'refs', 'tags')
         if not os.path.exists(tag_dir):
             return []
         return os.listdir(tag_dir)
-
 
     @staticmethod
     def delete_tag(repo, tag):
