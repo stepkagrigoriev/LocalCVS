@@ -8,7 +8,7 @@ from .commit import Commit
 from .branch import Branch
 from .tag import Tag
 
-available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag', 'checkout']
+available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag']
 
 
 def run_command(command, args):
@@ -40,11 +40,6 @@ def run_command(command, args):
         log_commits()
     elif command == 'tag':
         tag(args)
-    elif command == 'checkout':
-        if len(args) != 1:
-            print('Usage: LocalCVS checkout <branch or commit-sha>')
-            sys.exit(1)
-        checkout(args[0])
     else:
         print(args)
         print(f'Unknown command: {command}')
@@ -80,8 +75,7 @@ def commit_changes(text):
     repo = Repository(Repository.find_repo_root('.'))
     buffer = Buffer(repo)
     buffer.read()
-    parent = Branch.get_head(repo)
-    commit = Commit(repo, buffer.entries, text, parent)
+    commit = Commit(repo, buffer.entries, text)
     print(f'Commited: {commit.write()}')
 
 
@@ -101,7 +95,7 @@ def log_commits():
     repo = Repository(Repository.find_repo_root('.'))
     sha = Branch.get_head(repo)
     if not sha:
-        print('There\'s no commits in repo!')
+        print('There\' no commits in repo!')
     while sha:
         key, data = sha[:2], sha[2:]
         with open(os.path.join(repo.cvsdir, 'objects', key, data), 'rb') as f:
@@ -112,12 +106,12 @@ def log_commits():
                 message = line[8::]
                 break
         print(f'commit {sha}\n       {message}\n')
-        parent = None
+        prev = None
         for line in lines:
             if line.startswith('parent '):
-                parent = line[7::]
+                prev = line[7::]
                 break
-        sha = parent
+        sha = prev
 
 
 def tag(flags):
@@ -140,30 +134,3 @@ def tag(flags):
             print(f'Tag {flags[0]} created')
         except FileExistsError:
             print(f'Tag {flags[0]} already exists')
-
-def checkout(target):
-    repo = Repository(Repository.find_repo_root('.'))
-    head = os.path.join(repo.cvsdir, 'HEAD')
-    branch_path = os.path.join(repo.cvsdir, 'refs', 'heads', target)
-    obj_dir = os.path.join(repo.cvsdir, 'objects', target[:2], target[2:])
-    tag_sha = Tag.get_tag_commit(repo, target)
-    if os.path.isfile(branch_path):
-        with open(head, 'w', encoding='utf-8') as f:
-            f.write(f'refs/heads/{target}')
-        commit = Commit.load(repo, Branch.get_head(repo))
-        commit.restore_working_directory()
-        print(f'Switched to branch {target}')
-    elif os.path.isfile(obj_dir):
-        with open(head, 'w', encoding='utf-8') as f:
-            f.write(f'detached:{target}')
-        commit = Commit.load(repo, target)
-        commit.restore_working_directory()
-        print(f'HEAD is now at {target}')
-    elif tag_sha:
-        with open(head, 'w', encoding='utf-8') as f:
-            f.write(f'detached:{tag_sha}')
-        commit = Commit.load(repo, tag_sha)
-        commit.restore_working_directory()
-        print(f'Switched to tag {target} ({tag_sha})')
-    else:
-        print(f'Repository Error: no such branch/commit/tag {target}')

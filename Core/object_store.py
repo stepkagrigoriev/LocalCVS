@@ -16,8 +16,3 @@ class ObjectStore:
         with open(os.path.join(path, sha[2:]), 'wb') as f:
             f.write(compressed)
         return sha
-
-    def read_object(self, sha):
-        path = os.path.join(self.objects_dir, sha[:2], sha[2:])
-        with open(path, 'rb') as f:
-            return f.read()
