@@ -43,7 +43,7 @@ def run_command(command, args):
     else:
         print(args)
         print(f'Unknown command: {command}')
-        print(f'Available commands: {', '.join(available_commands)}')
+        print(f"Available commands: {', '.join(available_commands)}")
         sys.exit(1)
 
 
@@ -64,7 +64,7 @@ def add_files(file_paths):
     for path in file_paths:
         try:
             buffer.add(path)
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             print(f'File {path} not found!')
             sys.exit(1)
     buffer.write()
@@ -95,7 +95,7 @@ def log_commits():
     repo = Repository(Repository.find_repo_root('.'))
     sha = Branch.get_head(repo)
     if not sha:
-        print('There\' no commits in repo!')
+        print('There\'s no commits in repo!')
     while sha:
         key, data = sha[:2], sha[2:]
         with open(os.path.join(repo.cvsdir, 'objects', key, data), 'rb') as f:
@@ -106,12 +106,12 @@ def log_commits():
                 message = line[8::]
                 break
         print(f'commit {sha}\n       {message}\n')
-        prev = None
+        previous = None
         for line in lines:
             if line.startswith('parent '):
-                prev = line[7::]
+                previous = line[7::]
                 break
-        sha = prev
+        sha = previous
 
 
 def tag(flags):
@@ -125,12 +125,12 @@ def tag(flags):
         try:
             Tag.delete_tag(repo, flags[1])
             print(f'Tag {flags[1]} deleted')
-        except FileNotFoundError:
+        except RepositoryError:
             print(f'Tag {flags[1]} not found')
     else:
         sha = flags[1] if len(flags) > 1 else None
         try:
             Tag.create_tag(repo, flags[0], sha)
             print(f'Tag {flags[0]} created')
-        except FileExistsError:
+        except RepositoryError:
             print(f'Tag {flags[0]} already exists')

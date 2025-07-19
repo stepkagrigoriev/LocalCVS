@@ -1,7 +1,5 @@
 from .object_store import ObjectStore
 from .branch import Branch
-from .repository import Repository
-import os
 
 
 class Commit:
