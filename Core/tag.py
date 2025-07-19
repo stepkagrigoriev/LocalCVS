@@ -1,6 +1,7 @@
 import os
 from .branch import Branch
-from Core.repository import RepositoryError
+from .repository import RepositoryError
+
 
 class Tag:
     @staticmethod
@@ -32,6 +33,6 @@ class Tag:
     def get_tag_commit(repo, tag):
         tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
         if not os.path.exists(tag_path):
-            raise RepositoryError()
+            raise RepositoryError
         with open(tag_path, 'r') as f:
             return f.read().strip()
