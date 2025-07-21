@@ -19,6 +19,8 @@ class AddTests(unittest.TestCase):
         os.chdir(self.test_dir)
         with open('f1.txt', 'w', encoding='utf-8') as f:
             f.write('lublu python')
+        with open('f2.txt', 'w', encoding='utf-8') as f:
+            f.write('cool')
 
     def tearDown(self):
         os.chdir(self.initial_dir)
@@ -68,7 +70,18 @@ class AddTests(unittest.TestCase):
     def test_add_nonexistent_file(self):
         with self.assertRaises(SystemExit):
             with contextlib.redirect_stdout(io.StringIO()):
-                run_command('add', ['f2.txt'])
+                run_command('add', ['f3.txt'])
+
+    '''
+    Тест на cvs add .
+    '''
+    def test_add_dont_change_double(self):
+        with contextlib.redirect_stdout(io.StringIO()):
+            run_command('add', ['.'])
+        with open(os.path.join('.cvs', 'index'), 'r') as f:
+            value = f.read().splitlines()
+        self.assertEqual(2, len(value))
+
 
 
 if __name__ == '__main__':
