@@ -75,7 +75,7 @@ class AddTests(unittest.TestCase):
     '''
     Тест на cvs add .
     '''
-    def test_add_dont_change_double(self):
+    def test_add_all(self):
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['.'])
         with open(os.path.join('.cvs', 'index'), 'r') as f:
