@@ -1,5 +1,6 @@
 import os
 from .branch import Branch
+from .repository import RepositoryError
 
 
 class Tag:
@@ -7,7 +8,7 @@ class Tag:
     def create_tag(repo, tag, sha=None):
         tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
         if os.path.exists(tag_path):
-            raise FileExistsError()
+            raise RepositoryError
         if not sha:
             sha = Branch.get_head(repo)
         os.makedirs(os.path.dirname(tag_path), exist_ok=True)
@@ -25,13 +26,13 @@ class Tag:
     def delete_tag(repo, tag):
         tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
         if not os.path.exists(tag_path):
-            raise FileNotFoundError()
+            raise RepositoryError
         os.remove(tag_path)
 
     @staticmethod
     def get_tag_commit(repo, tag):
         tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
         if not os.path.exists(tag_path):
-            raise FileNotFoundError()
+            raise RepositoryError
         with open(tag_path, 'r') as f:
             return f.read().strip()

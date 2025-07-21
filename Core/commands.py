@@ -61,23 +61,14 @@ def add_files(file_paths):
     repo = Repository(Repository.find_repo_root('.'))
     buffer = Buffer(repo)
     buffer.read()
-    if file_paths == ['.']:
-        for dirpath, dirname, filenames in os.walk(repo.worktree):
-            if '.cvs' in dirname:
-                dirname.remove('.cvs')
-            for filename in filenames:
-                full_path = os.path.join(dirpath, filename)
-                buffer.add(full_path)
-        print("Added all files")
-    else:
-        for path in file_paths:
-            try:
-                buffer.add(path)
-                print(f'Added {len(file_paths)} files to buffer area')
-            except FileNotFoundError:
-                print(f'File {path} not found!')
-                sys.exit(1)
+    for path in file_paths:
+        try:
+            buffer.add(path)
+        except FileNotFoundError as e:
+            print(f'File {path} not found!')
+            sys.exit(1)
     buffer.write()
+    print(f'Added {len(file_paths)} files to buffer area')
 
 
 def commit_changes(text):
@@ -104,7 +95,7 @@ def log_commits():
     repo = Repository(Repository.find_repo_root('.'))
     sha = Branch.get_head(repo)
     if not sha:
-        print('There\'s no commits in repo!')
+        print('There\' no commits in repo!')
     while sha:
         key, data = sha[:2], sha[2:]
         with open(os.path.join(repo.cvsdir, 'objects', key, data), 'rb') as f:
