@@ -61,14 +61,23 @@ def add_files(file_paths):
     repo = Repository(Repository.find_repo_root('.'))
     buffer = Buffer(repo)
     buffer.read()
-    for path in file_paths:
-        try:
-            buffer.add(path)
-        except FileNotFoundError as e:
-            print(f'File {path} not found!')
-            sys.exit(1)
+    if file_paths == ['.']:
+        for dirpath, dirname, filenames in os.walk(repo.worktree):
+            if '.cvs' in dirname:
+                dirname.remove('.cvs')
+            for filename in filenames:
+                full_path = os.path.join(dirpath, filename)
+                buffer.add(full_path)
+        print("Added all files")
+    else:
+        for path in file_paths:
+            try:
+                buffer.add(path)
+                print(f'Added {len(file_paths)} files to buffer area')
+            except FileNotFoundError:
+                print(f'File {path} not found!')
+                sys.exit(1)
     buffer.write()
-    print(f'Added {len(file_paths)} files to buffer area')
 
 
 def commit_changes(text):
