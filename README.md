@@ -9,7 +9,7 @@ LocalCVS — это простая локальная система контр�
 - Просматривать историю коммитов (`log`)
 - Откатываться к предыдущим коммитам (`reset`)
 - Создавать и работать с тэгами (`tag`)
-
+- Работа с ветками (`branch`)
 ---
 
 ## Установка и использование
@@ -26,6 +26,7 @@ python -m LocalCVS init .
 
 # Добавление файлов в buffer
 python -m LocalCVS add file1.txt file2.txt
+python -m LocalCVS add .
 
 # Создание коммита с сообщением
 python -m LocalCVS commit -m "Initial commit"
@@ -40,7 +41,11 @@ python -m LocalCVS reset abcdefgh0123456789
 python -m LovalCVS tag v1.0 abcdefgh0123456789
 python -m LocalCVS tag v1.0 # ставит тэг на указатель HEAD
 python -m LocalCVS tag -d v1.0
-python -m LovalCVS tag #посмотреть все тэги и коммиты, привязанные к ним
+python -m LovalCVS tag # посмотреть все тэги и коммиты, привязанные к ним
+
+# Работа с ветками
+pythom -m LocalCVS branch # посмотреть все ветки (звездочкой указана текущая)
+python -m LocalCVS branch new_feature_1
 ```
 ---
 ## Тестирование

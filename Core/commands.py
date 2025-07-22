@@ -107,6 +107,16 @@ def log_commits():
     sha = Branch.get_head(repo)
     if not sha:
         print('Repository Error: There\'s no commits in repo!')
+        return
+
+    sha_branches = {}
+    for branch_name in os.listdir( os.path.join(repo.cvsdir, 'refs', 'heads')):
+        path = os.path.join(os.path.join(repo.cvsdir, 'refs', 'heads'), branch_name)
+        with open(path, 'r') as f:
+            sha = f.read().strip()
+        if sha not in sha_branches:
+            sha_branches[sha] = []
+        sha_branches[sha].append(branch_name)
     while sha:
         key, data = sha[:2], sha[2:]
         with open(os.path.join(repo.cvsdir, 'objects', key, data), 'rb') as f:
@@ -116,13 +126,15 @@ def log_commits():
             if line.startswith('message '):
                 message = line[8::]
                 break
-        print(f'commit {sha}\n       {message}\n')
-        prev = None
+        branches = sha_branches.get(sha, [])
+        b_info = f" ({', '.join(branches)})" if branches else ''
+        print(f'commit {sha}{b_info}\n       {message}\n')
+        previous = None
         for line in lines:
             if line.startswith('parent '):
-                prev = line[7::]
+                previous = line[7::]
                 break
-        sha = prev
+        sha = previous
 
 
 def tag(flags):
