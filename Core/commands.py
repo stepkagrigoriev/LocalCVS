@@ -8,7 +8,7 @@ from .commit import Commit
 from .branch import Branch
 from .tag import Tag
 
-available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag']
+available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag', 'branch']
 
 
 def run_command(command, args):
@@ -40,6 +40,8 @@ def run_command(command, args):
         log_commits()
     elif command == 'tag':
         tag(args)
+    elif command == 'branch':
+        branch(args)
     else:
         print(args)
         print(f'Unknown command: {command}')
@@ -75,7 +77,7 @@ def add_files(file_paths):
                 buffer.add(path)
                 print(f'Added {len(file_paths)} files to buffer area')
             except FileNotFoundError:
-                print(f'File {path} not found!')
+                print(f'Repository Error: File {path} not found!')
                 sys.exit(1)
     buffer.write()
 
@@ -93,7 +95,7 @@ def reset_to(commit_sha):
     sha_key, sha_value = commit_sha[:2], commit_sha[2:]
     commit_path = os.path.join(repo.cvsdir, 'objects', sha_key, sha_value)
     if not os.path.isfile(commit_path):
-        raise RepositoryError(f'Commit {commit_sha} not found')
+        raise RepositoryError(f'Repository Error: Commit {commit_sha} not found')
     Branch.update_head(repo, commit_sha)
     index = os.path.join(repo.cvsdir, 'index')
     if os.path.exists(index):
@@ -104,7 +106,7 @@ def log_commits():
     repo = Repository(Repository.find_repo_root('.'))
     sha = Branch.get_head(repo)
     if not sha:
-        print('There\' no commits in repo!')
+        print('Repository Error: There\'s no commits in repo!')
     while sha:
         key, data = sha[:2], sha[2:]
         with open(os.path.join(repo.cvsdir, 'objects', key, data), 'rb') as f:
@@ -135,11 +137,31 @@ def tag(flags):
             Tag.delete_tag(repo, flags[1])
             print(f'Tag {flags[1]} deleted')
         except FileNotFoundError:
-            print(f'Tag {flags[1]} not found')
+            print(f'Repository Error: Tag {flags[1]} not found')
     else:
         sha = flags[1] if len(flags) > 1 else None
         try:
             Tag.create_tag(repo, flags[0], sha)
             print(f'Tag {flags[0]} created')
         except FileExistsError:
-            print(f'Tag {flags[0]} already exists')
+            print(f'Repository Error: Tag {flags[0]} already exists')
+
+
+def branch(flags):
+    repo = Repository(Repository.find_repo_root('.'))
+    if not flags:
+        current_branch = Branch.get_head_ref(repo).split('/')[-1]
+        for branch_name in os.listdir(os.path.join(repo.cvsdir, 'refs', 'heads')):
+            if branch_name == current_branch:
+                print(f'* {branch_name}')
+            else:
+                print(f'  {branch_name}')
+    else:
+        path = os.path.join(repo.cvsdir, 'refs', 'heads', flags[0])
+        if os.path.exists(path):
+            print(f'Repository Error: Branch {flags[0]} already exists.')
+        else:
+            sha = Branch.get_head(repo)
+            with open(path, 'w') as f:
+                f.write(sha)
+            print(f'Branch {flags[0]} created at {sha}')
