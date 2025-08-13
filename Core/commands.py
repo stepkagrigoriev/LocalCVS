@@ -8,10 +8,12 @@ from .commit import Commit
 from .branch import Branch
 from .tag import Tag
 
-available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag', 'branch']
+available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag', 'branch', 'help']
 
 
 def run_command(command, args):
+    if command in ('-h', '--help', 'help'):
+        help()
     if command == 'init':
         if len(args) != 1:
             print('Usage: LocalCVS init .')
@@ -86,6 +88,12 @@ def commit_changes(text):
     repo = Repository(Repository.find_repo_root('.'))
     buffer = Buffer(repo)
     buffer.read()
+    parent = Branch.get_head(repo)
+    if parent:
+        parent_commit = Commit.load(repo, parent)
+        if parent_commit.entries == buffer.entries:
+            print("Nothing to commit")
+            return
     commit = Commit(repo, buffer.entries, text)
     print(f'Commited: {commit.write()}')
 
@@ -177,3 +185,24 @@ def branch(flags):
             with open(path, 'w') as f:
                 f.write(sha)
             print(f'Branch {flags[0]} created at {sha}')
+
+
+def help():
+    print("""
+        Usage:
+        python -m LocalCVS <command> [options]
+
+        Commands:
+        init [path]                  Инициализировать репозиторий (создаст .cvs)
+        add <file> [file...]         Добавить файлы в buffer
+        add .                        Добавить все изменения в buffer (кроме .cvs)
+        commit -m <message>          Создать коммит из содержимого staging
+        log                          Показать историю (с ветками и тегами)
+        reset <sha>                  Передвинуть HEAD на указанный коммит
+        tag                          Список тегов
+        tag <name> [sha]             Создать тег на sha (или на HEAD)
+        tag -d <name>                Удалить тег
+        branch                       Список веток (текущая помечена *)
+        branch <name>                Создать ветку на текущем HEAD
+        -h, --help, help             Показать эту справку
+        """)

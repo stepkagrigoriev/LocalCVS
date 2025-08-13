@@ -24,10 +24,10 @@ class Tag:
 
     @staticmethod
     def delete_tag(repo, tag):
-        tag_path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
-        if not os.path.exists(tag_path):
-            raise RepositoryError
-        os.remove(tag_path)
+        path = os.path.join(repo.cvsdir, 'refs', 'tags', tag)
+        if not os.path.exists(path):
+            raise RepositoryError('No such tag')
+        os.remove(path)
 
     @staticmethod
     def get_tag_commit(repo, tag):
