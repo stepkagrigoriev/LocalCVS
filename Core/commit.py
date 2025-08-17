@@ -22,12 +22,12 @@ class Commit:
         for path, sha in self.entries.items():
             tree_data += f'{sha} {path}\n'.encode('utf-8')
         tree_sha = ObjectStore(self.repo).write_object('tree', tree_data)
-        lines = [f"tree {tree_sha}", f"author {self.author}",
-                f"time {self.creation_time}", f"message {self.message}"]
+        lines = [f'tree {tree_sha}', f'author {self.author}',
+                f'time {self.creation_time}', f'message {self.message}']
         if self.parent:
             lines.append(f"parent {self.parent}")
-        commit_payload = ("\n".join(lines) + "\n").encode('utf-8')
-        sha = ObjectStore(self.repo).write_object('commit', commit_payload)
+        name = ('\n'.join(lines) + '\n').encode('utf-8')
+        sha = ObjectStore(self.repo).write_object('commit', name)
         Branch.update_head(self.repo, sha)
         return sha
 
@@ -46,7 +46,7 @@ class Commit:
             elif l.startswith('author '):
                 author = l.split(' ', 1)[1]
             elif l.startswith('time '):
-                creation_time = int(l.split(' ', 1)[1])
+                creation_time = l.split(' ', 1)[1]
             elif l.startswith('message '):
                 message = l[8:]
         entries = {}

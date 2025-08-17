@@ -59,5 +59,4 @@ python -m unittest discover Tests
 ```
 ## Автор - Григорьев Степан [stepkagrigoriev](https://github.com/stepkagrigoriev)
 
-## Материалы: https://code-handbook.vercel.app/fundamentals/version-control-systems https://habr.com/ru/articles/313890/ 
-[https://githowto.com/ru/git_internals_git_directory](https://githowto.com/ru/git_internals_git_directory)
+## Материалы: https://code-handbook.vercel.app/fundamentals/version-control-systems https://habr.com/ru/articles/313890/ https://githowto.com/ru/git_internals_git_directory    

@@ -4,7 +4,8 @@ import shutil
 import zlib
 import contextlib
 import io
-from Core.repository import Repository
+from Core.object_store import ObjectStore
+from Core.repository import Repository, RepositoryError
 from Core.commands import run_command
 from Core.branch import Branch
 
@@ -66,22 +67,22 @@ class CommitTests(unittest.TestCase):
     (для текущего изменения всегда известно предыдущее)
     '''
     def test_multiple_commits_chain(self):
-        with open('f1.txt', 'w') as f:
+        with open('f1.txt', 'w', encoding='utf-8') as f:
             f.write('lublu')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'first_commit'])
             sha1 = Branch.get_head(self.repo)
-        with open('f1.txt', 'w') as f:
+        with open('f1.txt', 'w', encoding='utf-8') as f:
             f.write('python')
         with contextlib.redirect_stdout(io.StringIO()):
             run_command('add', ['f1.txt'])
             run_command('commit', ['-m', 'second_commit'])
             sha2 = Branch.get_head(self.repo)
-        key, data = sha2[:2], sha2[2::]
-        with open(os.path.join('.cvs', 'objects', key, data), 'rb') as f:
-            decomp = zlib.decompress(f.read())
-        self.assertIn(sha1.encode(), decomp)
+        obj_type, raw = ObjectStore(self.repo).read_object(sha2)
+        self.assertEqual(obj_type, 'commit')
+        text = raw.decode('utf-8', errors='replace')
+        self.assertIn(sha1, text)
 
 
 if __name__ == '__main__':

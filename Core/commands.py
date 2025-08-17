@@ -1,6 +1,8 @@
 import sys
 import os
 import zlib
+
+from Core.object_store import ObjectStore
 from .repository import Repository
 from .repository import RepositoryError
 from .buffer import Buffer
@@ -89,13 +91,30 @@ def commit_changes(text):
     buffer = Buffer(repo)
     buffer.read()
     parent = Branch.get_head(repo)
+    valid_parent = None
     if parent:
-        parent_commit = Commit.load(repo, parent)
-        if parent_commit.entries == buffer.entries:
-            print("Nothing to commit")
-            return
-    commit = Commit(repo, buffer.entries, text)
-    print(f'Commited: {commit.write()}')
+        try:
+            obj_type, _ = ObjectStore(repo).read_object(parent)
+        except FileNotFoundError:
+            print(f'parent obj {parent} not found')
+        else:
+            if obj_type != 'commit':
+                print(f"HEAD at '{obj_type}', not at 'commit' (sha={parent})")
+            else:
+                valid_parent = parent
+    if valid_parent:
+        try:
+            parent_sha = Commit.load(repo, valid_parent)
+            if parent_sha.entries == buffer.entries:
+                print('Nothing to commit (working tree clean)')
+                return
+        except:
+            print(f'Unable to load parent {valid_parent}')
+            valid_parent = None
+
+    commit = Commit(repo, buffer.entries, text, parent=valid_parent)
+    sha = commit.write()
+    print(f'Commited: {sha}')
 
 
 def reset_to(commit_sha):
