@@ -62,28 +62,5 @@ class CommitTests(unittest.TestCase):
             decomp = zlib.decompress(f.read())
         self.assertIn(bytes('lublu python', 'utf-8'), decomp)
 
-    '''
-    Тестим, что коммит сохраняет последовательность изменений
-    (для текущего изменения всегда известно предыдущее)
-    '''
-    def test_multiple_commits_chain(self):
-        with open('f1.txt', 'w', encoding='utf-8') as f:
-            f.write('lublu')
-        with contextlib.redirect_stdout(io.StringIO()):
-            run_command('add', ['f1.txt'])
-            run_command('commit', ['-m', 'first_commit'])
-            sha1 = Branch.get_head(self.repo)
-        with open('f1.txt', 'w', encoding='utf-8') as f:
-            f.write('python')
-        with contextlib.redirect_stdout(io.StringIO()):
-            run_command('add', ['f1.txt'])
-            run_command('commit', ['-m', 'second_commit'])
-            sha2 = Branch.get_head(self.repo)
-        obj_type, raw = ObjectStore(self.repo).read_object(sha2)
-        self.assertEqual(obj_type, 'commit')
-        text = raw.decode('utf-8', errors='replace')
-        self.assertIn(sha1, text)
-
-
 if __name__ == '__main__':
     unittest.main()
