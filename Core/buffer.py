@@ -26,5 +26,5 @@ class Buffer:
         store = ObjectStore(self.repo)
         with open(file_path, 'rb') as f:
             data = f.read()
-        sha = store.hash_object(data, 'blob')
+        sha = store.write_object(data, 'blob')
         self.entries[os.path.relpath(file_path, self.repo.worktree)] = sha

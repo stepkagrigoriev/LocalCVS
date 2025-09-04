@@ -1,6 +1,8 @@
 import sys
 import os
 import zlib
+
+from .object_store import ObjectStore
 from .repository import Repository
 from .repository import RepositoryError
 from .buffer import Buffer
@@ -8,10 +10,12 @@ from .commit import Commit
 from .branch import Branch
 from .tag import Tag
 
-available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag', 'branch']
+available_commands = ['init', 'add', 'commit', 'reset', 'log', 'tag', 'branch', 'help']
 
 
 def run_command(command, args):
+    if command in ('-h', '--help', 'help'):
+        help()
     if command == 'init':
         if len(args) != 1:
             print('Usage: LocalCVS init .')
@@ -86,8 +90,31 @@ def commit_changes(text):
     repo = Repository(Repository.find_repo_root('.'))
     buffer = Buffer(repo)
     buffer.read()
-    commit = Commit(repo, buffer.entries, text)
-    print(f'Commited: {commit.write()}')
+    parent = Branch.get_head(repo)
+    valid_parent = None
+    if parent:
+        try:
+            obj_type, _ = ObjectStore(repo).read_object(parent)
+        except FileNotFoundError:
+            print(f'parent obj {parent} not found')
+        else:
+            if obj_type != 'commit':
+                print(f"HEAD at '{obj_type}', not at 'commit' (sha={parent})")
+            else:
+                valid_parent = parent
+    if valid_parent:
+        try:
+            parent_sha = Commit.load(repo, valid_parent)
+            if parent_sha.entries == buffer.entries:
+                print('Nothing to commit (working tree clean)')
+                return
+        except:
+            print(f'Unable to load parent {valid_parent}')
+            valid_parent = None
+
+    commit = Commit(repo, buffer.entries, text, parent=valid_parent)
+    sha = commit.write()
+    print(f'Commited: {sha}')
 
 
 def reset_to(commit_sha):
@@ -177,3 +204,24 @@ def branch(flags):
             with open(path, 'w') as f:
                 f.write(sha)
             print(f'Branch {flags[0]} created at {sha}')
+
+
+def help():
+    print("""
+        Usage:
+        python -m LocalCVS <command> [options]
+
+        Commands:
+        init [path]                  Инициализировать репозиторий (создаст .cvs)
+        add <file> [file...]         Добавить файлы в buffer
+        add .                        Добавить все изменения в buffer (кроме .cvs)
+        commit -m <message>          Создать коммит из содержимого staging
+        log                          Показать историю (с ветками и тегами)
+        reset <sha>                  Передвинуть HEAD на указанный коммит
+        tag                          Список тегов
+        tag <name> [sha]             Создать тег на sha (или на HEAD)
+        tag -d <name>                Удалить тег
+        branch                       Список веток (текущая помечена *)
+        branch <name>                Создать ветку на текущем HEAD
+        -h, --help, help             Показать эту справку
+        """)
