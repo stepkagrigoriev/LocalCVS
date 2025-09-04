@@ -2,7 +2,7 @@ import sys
 import os
 import zlib
 
-from Core.object_store import ObjectStore
+from .object_store import ObjectStore
 from .repository import Repository
 from .repository import RepositoryError
 from .buffer import Buffer
